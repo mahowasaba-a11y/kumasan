@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>シリル怖くない！部隊比率メーカー</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #fff0f5;
+      color: #333;
+      padding: 30px;
+      max-width: 550px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #ff69b4;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input {
+      width: 100%;
+      padding: 6px;
+      border: 2px solid #ffb6c1;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .ratio-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ratio-group {
+      flex: 1;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff85c1;
+    }
+    .result {
+      margin-top: 25px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px dashed #ffb6c1;
+      font-size: 16px;
+      white-space: pre-line;
+    }
+    h3 {
+      margin-top: 30px;
+      color: #cc6699;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+      }
+
+      .ratio-row {
+        flex-direction: column;
+      }
+
+      .ratio-group {
+        width: 100%;
+      }
+
+      input {
+        font-size: 16px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>🛡️ シリル怖くない！<br>部隊比率メーカー</h2>
+
+  <label>出征数（合計）</label>
+  <input type="number" id="total" placeholder="例：10000">
+
+  <div class="ratio-row">
+    <div class="ratio-group">
+      <label>🛡️ 盾（%）</label>
+      <input type="number" id="shield" placeholder="例：40">
+    </div>
+    <div class="ratio-group">
+      <label>🔱 槍（%）</label>
+      <input type="number" id="spear" placeholder="例：30">
+    </div>
+    <div class="ratio-group">
+      <label>🏹 弓（%）</label>
+      <input type="number" id="bow" placeholder="例：30">
+    </div>
+  </div>
+
+  <h3>🧮 各兵種の所持数（任意）</h3>
+  <div class="ratio-row">
+    <div class="ratio-group">
+      <label>🛡️ 盾の所持数</label>
+      <input type="number" id="totalShield" placeholder="例：5000">
+    </div>
+    <div class="ratio-group">
+      <label>🔱 槍の所持数</label>
+      <input type="number" id="totalSpear" placeholder="例：4000">
+    </div>
+    <div class="ratio-group">
+      <label>🏹 弓の所持数</label>
+      <input type="number" id="totalBow" placeholder="例：3000">
+    </div>
+  </div>
+
+  <button onclick="calculate()">✨ 計算する ✨</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function calculate() {
+      const total = parseInt(document.getElementById("total").value);
+      const shield = parseFloat(document.getElementById("shield").value);
+      const spear = parseFloat(document.getElementById("spear").value);
+      const bow = parseFloat(document.getElementById("bow").value);
+      const sum = shield + spear + bow;
+
+      if (isNaN(total) || isNaN(shield) || isNaN(spear) || isNaN(bow)) {
+        document.getElementById("output").innerText = "⚠️ すべての項目を入力してね！";
+        return;
+      }
+
+      if (sum !== 100) {
+        document.getElementById("output").innerText = "⚠️ 比率の合計が100%になるようにしてね！";
+        return;
+      }
+
+      const sh = Math.floor(total * (shield / 100));
+      const sp = Math.floor(total * (spear / 100));
+      const bw = total - sh - sp;
+
+      const totalShield = parseInt(document.getElementById("totalShield").value);
+      const totalSpear = parseInt(document.getElementById("totalSpear").value);
+      const totalBow = parseInt(document.getElementById("totalBow").value);
+
+      let remainText = "";
+      if (!isNaN(totalShield) || !isNaN(totalSpear) || !isNaN(totalBow)) {
+        remainText = `\n🧾 残り兵士数：\n`;
+
+        if (!isNaN(totalShield)) {
+          const remainShield = totalShield - sh;
+          remainText += `🛡️ 盾：${remainShield}人\n`;
+        }
+        if (!isNaN(totalSpear)) {
+          const remainSpear = totalSpear - sp;
+          remainText += `🔱 槍：${remainSpear}人\n`;
+        }
+        if (!isNaN(totalBow)) {
+          const remainBow = totalBow - bw;
+          remainText += `🏹 弓：${remainBow}人`;
+        }
+      }
+
+      document.getElementById("output").innerText =
+        `✅ 結果はこちら！\n\n` +
+        `🛡️ 盾：${sh}人\n🔱 槍：${sp}人\n🏹 弓：${bw}人` +
+        remainText;
+    }
+  </script>
+</body>
+</html>
